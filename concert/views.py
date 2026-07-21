@@ -39,14 +39,14 @@ def index(request):
 def songs(request):
     # songs = {"songs":[]}
     # return render(request, "songs.html", {"songs": [insert list here]})
-    songs = req.get("https://SONGS_URL/song").json()
+    songs = req.get("http://songs-sn-labs-msds3272021.labs-prod-openshift-san-a45631dc5778dc6371c67d206ba9ae5c-0000.us-east.containers.appdomain.cloud/song").json()
     return render(request, "songs.html", {"songs": songs["songs"]})
 
 
 def photos(request):
     # photos = []
     # return render(request, "photos.html", {"photos": photos})
-    photos = req.get("https://PHOTO_URL/picture").json()
+    photos = req.get("https://pictures.2cjt0tlnuqur.us-south.codeengine.appdomain.cloud/picture").json()
     return render(request, "photos.html", {"photos": photos})
 
 
