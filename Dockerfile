@@ -1,29 +1,28 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    run: djangoserver
-  name: djangoserver
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      run: djangoserver
-  strategy:
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
-    type: RollingUpdate
-  template:
-    metadata:
-      labels:
-        run: djangoserver
-    spec:
-      containers:
-      - image: us.icr.io/sn-labs-msds3272021/djangoserver:1
-        imagePullPolicy: Always
-        name: djangoserver
-        ports:
-        - containerPort: 8000
-          protocol: TCP
-      restartPolicy: Always
+FROM python:3.9.16-slim
+
+ENV PYTHONBUFFERED 1
+ENV PYTHONWRITEBYTECODE 1
+
+RUN apt-get update \
+    && apt-get install -y netcat
+
+ENV APP=/app
+
+# Change the workdir.
+WORKDIR $APP
+
+# Install the requirements
+COPY requirements.txt $APP
+
+RUN pip3 install -r requirements.txt
+
+# Copy the rest of the files
+COPY . $APP
+
+EXPOSE 8000
+
+RUN chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["/bin/bash","/app/entrypoint.sh"]
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
